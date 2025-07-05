@@ -10,19 +10,19 @@ This is a React + TypeScript + Vite web application named "shader-playground". C
 
 ```bash
 # Install dependencies
-npm install
+yarn install
 
 # Start development server
-npm run dev
+yarn dev
 
 # Build for production
-npm run build
+yarn build
 
 # Preview production build
-npm run preview
+yarn preview
 
 # Run linting
-npm run lint
+yarn lint
 ```
 
 ## Architecture
