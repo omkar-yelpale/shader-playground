@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import type { AudioAnalyzer } from '../../utils/audioAnalyzer'
 import type { ShaderEffect } from '../../types/shaders'
+import { getColorForScheme, applyBrightnessContrast } from '../../utils/colorSchemes'
+import type { ColorScheme } from '../../utils/colorSchemes'
 // Import and register materials with R3F
 import { AudioReactiveMaterial } from '../../shaders/materials/AudioReactiveMaterial'
 import { ParticleMaterial } from '../../shaders/materials/ParticleMaterial'
@@ -18,13 +20,43 @@ interface AudioReactiveMeshProps {
   effect: ShaderEffect
   wireframe?: boolean
   particleCount?: number
+  colorScheme?: ColorScheme
+  brightness?: number
+  contrast?: number
+  sensitivity?: number
+  bassBoost?: number
+  midBoost?: number
+  trebleBoost?: number
+  speed?: number
+  waveAmplitude?: number
+  waveFrequency?: number
+  particleSize?: number
+  particleSpeed?: number
+  fractalComplexity?: number
+  fractalIterations?: number
+  frameSkip?: number
 }
 
 export function AudioReactiveMesh({ 
   analyzer, 
   effect, 
   wireframe = false,
-  particleCount = 10000 
+  particleCount = 10000,
+  colorScheme = 'spectrum',
+  brightness = 1,
+  contrast = 1,
+  sensitivity = 1,
+  bassBoost = 1,
+  midBoost = 1,
+  trebleBoost = 1,
+  speed = 1,
+  waveAmplitude = 0.5,
+  waveFrequency = 10,
+  particleSize = 3,
+  particleSpeed = 1,
+  fractalComplexity = 3,
+  fractalIterations = 15,
+  frameSkip = 2
 }: AudioReactiveMeshProps) {
   const meshRef = useRef<THREE.Mesh>(null)
   const pointsRef = useRef<THREE.Points>(null)
@@ -68,24 +100,64 @@ export function AudioReactiveMesh({
       return geometry
     } else {
       // Plane geometry for waveform and fractal
-      return new THREE.PlaneGeometry(10, 10, 128, 128)
+      const geometry = new THREE.PlaneGeometry(10, 10, 128, 128)
+      geometry.center() // Ensure geometry is centered
+      return geometry
     }
   }, [effect, particleCount])
   
   useFrame((state) => {
     if (!analyzer || !materialRef.current) return
     
-    // Update audio data at 30Hz for performance
+    // Update audio data based on frame skip setting
     frameCount.current++
-    if (frameCount.current % 2 === 0) {
+    if (frameCount.current % frameSkip === 0) {
       const bands = analyzer.getFrequencyBands(8)
       const audioBands = analyzer.getAudioBands()
       
+      // Apply boost values and sensitivity
+      const boostedBass = audioBands.bass * bassBoost * sensitivity
+      const boostedMid = audioBands.mid * midBoost * sensitivity
+      const boostedTreble = audioBands.treble * trebleBoost * sensitivity
+      
       // Update material uniforms
-      materialRef.current.uniforms.u_audioData.value = bands
-      materialRef.current.uniforms.u_bass.value = audioBands.bass
-      materialRef.current.uniforms.u_mid.value = audioBands.mid
-      materialRef.current.uniforms.u_treble.value = audioBands.treble
+      materialRef.current.uniforms.u_audioData.value = bands.map(b => b * sensitivity)
+      materialRef.current.uniforms.u_bass.value = boostedBass
+      materialRef.current.uniforms.u_mid.value = boostedMid
+      materialRef.current.uniforms.u_treble.value = boostedTreble
+      
+      // Update colors based on color scheme
+      const colors = {
+        primary: getColorForScheme(colorScheme, 'primary'),
+        secondary: getColorForScheme(colorScheme, 'secondary'),
+        tertiary: getColorForScheme(colorScheme, 'tertiary'),
+      }
+      
+      // Apply brightness and contrast to colors
+      Object.entries(colors).forEach(([key, color]) => {
+        colors[key as keyof typeof colors] = applyBrightnessContrast(color, brightness, contrast)
+      })
+      
+      // Update color uniforms based on effect type
+      if (effect === 'waveform' && materialRef.current.uniforms.u_colorA) {
+        materialRef.current.uniforms.u_colorA.value = colors.primary
+        materialRef.current.uniforms.u_colorB.value = colors.secondary
+        materialRef.current.uniforms.u_colorC.value = colors.tertiary
+        materialRef.current.uniforms.u_waveAmplitude.value = waveAmplitude
+        materialRef.current.uniforms.u_waveFrequency.value = waveFrequency
+      } else if (effect === 'particles' && materialRef.current.uniforms.u_particleColorA) {
+        materialRef.current.uniforms.u_particleColorA.value = colors.primary
+        materialRef.current.uniforms.u_particleColorB.value = colors.secondary
+        materialRef.current.uniforms.u_particleColorC.value = colors.tertiary
+        materialRef.current.uniforms.u_pointSize.value = particleSize
+        materialRef.current.uniforms.u_particleSpeed.value = particleSpeed
+      } else if (effect === 'fractal' && materialRef.current.uniforms.u_fractalColorA) {
+        materialRef.current.uniforms.u_fractalColorA.value = colors.primary
+        materialRef.current.uniforms.u_fractalColorB.value = colors.secondary
+        materialRef.current.uniforms.u_fractalColorC.value = colors.tertiary
+        materialRef.current.uniforms.u_complexity.value = fractalComplexity
+        materialRef.current.uniforms.u_fractalIterations.value = fractalIterations
+      }
       
       // Detect beat for extra effects
       const beat = analyzer.detectBeat()
@@ -94,8 +166,8 @@ export function AudioReactiveMesh({
       }
     }
     
-    // Always update time
-    materialRef.current.uniforms.u_time.value = state.clock.elapsedTime
+    // Always update time with speed multiplier
+    materialRef.current.uniforms.u_time.value = state.clock.elapsedTime * speed
     
     // Update resolution for fractal
     if (effect === 'fractal' && materialRef.current.uniforms.u_resolution) {
@@ -112,7 +184,7 @@ export function AudioReactiveMesh({
     
     // Rotate particles
     if (effect === 'particles' && pointsRef.current) {
-      pointsRef.current.rotation.y += 0.001
+      pointsRef.current.rotation.y += 0.001 * speed
     }
   })
   

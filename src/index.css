@@ -4,18 +4,25 @@
 
 @layer base {
   :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
-    color-scheme: dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #0f0f0f;
+    color-scheme: light dark;
+    color: #1d1d1f;
+    background-color: #ffffff;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color: #f5f5f7;
+      background-color: #000000;
+    }
   }
 
   body {
@@ -30,19 +37,43 @@
 }
 
 @layer components {
+  /* Apple-style glass panel */
   .glass-panel {
-    @apply backdrop-blur-lg bg-white/10 border border-white/20 rounded-lg;
+    @apply backdrop-blur-apple bg-apple-gray-100/80 dark:bg-apple-gray-900/80 border border-apple-gray-200/50 dark:border-apple-gray-800/50 rounded-2xl shadow-apple;
   }
 
+  /* Apple-style gradient background */
   .gradient-bg {
-    @apply bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900;
+    @apply bg-apple-gray-50 dark:bg-black;
   }
 
+  /* Apple-style primary button */
   .btn-primary {
-    @apply px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors duration-200 font-medium;
+    @apply px-5 py-2.5 bg-primary text-white rounded-full transition-all duration-200 font-medium text-sm hover:bg-primary-600 active:scale-95 shadow-apple;
   }
 
+  /* Apple-style secondary button */
   .btn-secondary {
-    @apply px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors duration-200 font-medium backdrop-blur-sm border border-white/20;
+    @apply px-5 py-2.5 bg-apple-gray-100 dark:bg-apple-gray-800 text-apple-gray-900 dark:text-apple-gray-100 rounded-full transition-all duration-200 font-medium text-sm hover:bg-apple-gray-200 dark:hover:bg-apple-gray-700 active:scale-95 shadow-apple;
+  }
+
+  /* Apple-style input */
+  .input-apple {
+    @apply w-full px-4 py-3 bg-apple-gray-100 dark:bg-apple-gray-900 text-apple-gray-900 dark:text-apple-gray-100 rounded-xl border border-apple-gray-200 dark:border-apple-gray-800 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
+  }
+
+  /* Apple-style card */
+  .card-apple {
+    @apply bg-white dark:bg-apple-gray-900 rounded-2xl shadow-apple-lg p-6;
+  }
+}
+
+@layer utilities {
+  .animation-delay-150 {
+    animation-delay: 150ms;
+  }
+  
+  .animation-delay-300 {
+    animation-delay: 300ms;
   }
 }

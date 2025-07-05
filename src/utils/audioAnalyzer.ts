@@ -226,6 +226,13 @@ export class AudioAnalyzer {
   }
   
   /**
+   * Update analyzer smoothing time constant
+   */
+  setSmoothing(smoothing: number): void {
+    this.analyser.smoothingTimeConstant = Math.max(0, Math.min(0.95, smoothing))
+  }
+  
+  /**
    * Resume audio context if suspended
    */
   async resume(): Promise<void> {

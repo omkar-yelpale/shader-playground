@@ -29,7 +29,7 @@ export function Lights() {
         ref={light1Ref}
         position={[5, 5, 5]}
         intensity={0.5}
-        color="#a855f7"
+        color="#007AFF"
         distance={20}
         decay={2}
       />
@@ -38,7 +38,7 @@ export function Lights() {
         ref={light2Ref}
         position={[-5, 5, -5]}
         intensity={0.5}
-        color="#22d3ee"
+        color="#5AC8FA"
         distance={20}
         decay={2}
       />

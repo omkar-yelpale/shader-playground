@@ -27,6 +27,7 @@ export function CameraControls({
     <OrbitControls
       ref={controlsRef}
       camera={camera}
+      target={[0, 0, 0]}
       autoRotate={autoRotate}
       autoRotateSpeed={autoRotateSpeed}
       enableDamping={enableDamping}

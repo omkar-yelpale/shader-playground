@@ -172,7 +172,7 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 p-4">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-apple-gray-50/95 dark:bg-apple-gray-900/95 backdrop-blur-apple border-t border-apple-gray-200/50 dark:border-apple-gray-800/50 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Audio element */}
         <audio
@@ -186,10 +186,10 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
         
         {/* File upload area */}
         <div
-          className={`mb-4 border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+          className={`mb-4 border-2 border-dashed rounded-2xl p-6 text-center transition-all ${
             isDragging 
-              ? 'border-purple-500 bg-purple-500/10' 
-              : 'border-slate-700 hover:border-slate-600'
+              ? 'border-primary bg-primary/5 scale-[1.02]' 
+              : 'border-apple-gray-300 dark:border-apple-gray-700 hover:border-apple-gray-400 dark:hover:border-apple-gray-600'
           }`}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
@@ -207,23 +207,23 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
             className="hidden"
           />
           
-          <div className="space-y-2">
-            <p className="text-slate-400">
+          <div className="space-y-3">
+            <p className="text-apple-gray-600 dark:text-apple-gray-400 text-sm">
               {fileName || 'Drag and drop an audio file here'}
             </p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                className="btn-primary"
               >
                 Choose File
               </button>
               <button
                 onClick={handleMicrophoneToggle}
-                className={`px-4 py-2 rounded-lg transition-colors ${
+                className={`${
                   audioSource === 'microphone'
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                    : 'bg-slate-700 hover:bg-slate-600 text-white'
+                    ? 'px-5 py-2.5 bg-apple-red text-white rounded-full transition-all duration-200 font-medium text-sm hover:bg-red-700 active:scale-95 shadow-apple'
+                    : 'btn-secondary'
                 }`}
               >
                 {audioSource === 'microphone' ? 'Stop Microphone' : 'Use Microphone'}
@@ -237,7 +237,7 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
           <div className="space-y-3">
             {/* Progress bar */}
             <div className="flex items-center gap-3">
-              <span className="text-slate-400 text-sm w-12">
+              <span className="text-apple-gray-500 dark:text-apple-gray-400 text-xs font-medium w-12">
                 {formatTime(currentTime)}
               </span>
               <input
@@ -246,9 +246,9 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
                 max={duration || 0}
                 value={currentTime}
                 onChange={handleSeek}
-                className="flex-1 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer"
+                className="flex-1 h-1 bg-apple-gray-200 dark:bg-apple-gray-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-apple"
               />
-              <span className="text-slate-400 text-sm w-12">
+              <span className="text-apple-gray-500 dark:text-apple-gray-400 text-xs font-medium w-12">
                 {formatTime(duration)}
               </span>
             </div>
@@ -257,14 +257,14 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
             <div className="flex items-center gap-4">
               <button
                 onClick={handlePlayPause}
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                className="btn-primary"
               >
                 {isPlaying ? 'Pause' : 'Play'}
               </button>
               
               {/* Volume control */}
-              <div className="flex items-center gap-2 flex-1">
-                <span className="text-slate-400 text-sm">Volume</span>
+              <div className="flex items-center gap-3 flex-1">
+                <span className="text-apple-gray-500 dark:text-apple-gray-400 text-sm">Volume</span>
                 <input
                   type="range"
                   min="0"
@@ -272,9 +272,9 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
                   step="0.01"
                   value={volume}
                   onChange={handleVolumeChange}
-                  className="flex-1 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer"
+                  className="flex-1 h-1 bg-apple-gray-200 dark:bg-apple-gray-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-apple"
                 />
-                <span className="text-slate-400 text-sm w-12">
+                <span className="text-apple-gray-500 dark:text-apple-gray-400 text-xs font-medium w-10">
                   {Math.round(volume * 100)}%
                 </span>
               </div>
@@ -284,9 +284,9 @@ export function AudioControls({ analyzer, onAnalyzerReady }: AudioControlsProps)
         
         {/* Microphone indicator */}
         {audioSource === 'microphone' && (
-          <div className="flex items-center justify-center gap-2 text-red-500">
-            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-            <span>Microphone Active</span>
+          <div className="flex items-center justify-center gap-2 text-apple-red">
+            <div className="w-2 h-2 bg-apple-red rounded-full animate-pulse" />
+            <span className="text-sm font-medium">Microphone Active</span>
           </div>
         )}
       </div>
